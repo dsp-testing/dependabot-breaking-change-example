@@ -1,0 +1,2 @@
+dependabot-breaking-change-example
+-----------------------------------
