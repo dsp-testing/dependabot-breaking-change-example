@@ -36,7 +36,7 @@ jobs:
         run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GHPR_TOKEN }}" > ~/.npmrc
 
       - name: Install Dependabot Autofix
-        run: npm install -g @dependabot/autofix
+        run: npm install -g @github/dependabot-autofix
 
       - name: Generate Autofix SARIF
         run: dependabot-autofix ${{ github.event.inputs.pull_request_url }} ./ ./dependabot.sarif
