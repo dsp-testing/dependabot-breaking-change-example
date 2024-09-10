@@ -1,0 +1,53 @@
+name: Dependabot Autofix
+on:
+  workflow_dispatch:
+    inputs:
+      pull_request_url:
+        description: 'The URL of the pull request'
+        required: true
+        type: string
+
+jobs:
+  Autofix:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3 # TODO: Pin to a version
+
+      - name: Set up node
+        uses: actions/setup-node@v3 # TODO: Pin to a version
+        with:
+          node-version: '22'
+          registry-url: https://npm.pkg.github.com
+
+      - name: Extract PR ref and sha
+        id: extract_pr_details
+        run: |
+          pr_number=$(echo "${{ github.event.inputs.pull_request_url }}" | grep -oE '[0-9]+$')
+          gh pr view $pr_number --repo ${{ github.repository }} --json headRefName,headRefOid > pr_details.json
+          ref=$(jq -r '.headRefName' pr_details.json)
+          sha=$(jq -r '.headRefOid' pr_details.json)
+          echo "ref=$ref" >> $GITHUB_ENV
+          echo "sha=$sha" >> $GITHUB_ENV
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Authenticate with GitHub Package Registry
+        run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GHPR_TOKEN }}" > ~/.npmrc
+
+      - name: Install Dependabot Autofix
+        run: npm install -g @dependabot/autofix
+
+      - name: Generate Autofix SARIF
+        run: dependabot-autofix ${{ github.event.inputs.pull_request_url }} ./ ./dependabot.sarif
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload SARIF
+        uses: github/codeql-action/upload-sarif@v3 # TODO: Pin to a version
+        with:
+          sarif_file: dependabot.sarif
+          ref: ${{ env.ref }}
+          sha: ${{ env.sha }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
