@@ -33,8 +33,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Authenticate with GitHub Package Registry
-        run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GHPR_TOKEN }}" > ~/.npmrc
-
+        run: |
+          npm config set @github:registry=https:npm.pkg.github.com
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GHPR_TOKEN }}" >> ~/.npmrc
+      
       - name: Install Dependabot Autofix
         run: npm install -g @github/dependabot-autofix
 
