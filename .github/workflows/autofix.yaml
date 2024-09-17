@@ -10,6 +10,11 @@ on:
 jobs:
   Autofix:
     runs-on: ubuntu-latest
+    permissions: 
+      contents: "read"
+      actions: "read"
+      pull-requests: "read"
+      security-events: "write"
     steps:
       - name: Checkout
         uses: actions/checkout@v3 # TODO: Pin to a version
