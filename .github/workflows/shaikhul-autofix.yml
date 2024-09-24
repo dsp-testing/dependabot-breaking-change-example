@@ -33,7 +33,7 @@ jobs:
           ref=$(jq -r '.headRefName' pr_details.json)
           sha=$(jq -r '.headRefOid' pr_details.json)
           # echo "ref=$ref" >> $GITHUB_ENV
-          echo "ref=refs/pull/$pr_number/head" >> $GITHUB_ENV
+          echo "ref=refs/pull/$pr_number/merge" >> $GITHUB_ENV
           echo "sha=$sha" >> $GITHUB_ENV
           echo "ref=$ref"
           echo "sha=$sha"
