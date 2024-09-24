@@ -60,5 +60,4 @@ jobs:
           sarif_file: dependabot.sarif
           ref: ${{ env.ref }}
           sha: ${{ env.sha }}
-          commit_sha: ${{ env.sha }}
           wait-for-processing: true
