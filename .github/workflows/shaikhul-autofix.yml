@@ -58,6 +58,6 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3 # TODO: Pin to a version
         with:
           sarif_file: dependabot.sarif
-          ef: ${{ env.ref }}
+          ref: ${{ env.ref }}
           sha: ${{ env.sha }}
           wait-for-processing: true
